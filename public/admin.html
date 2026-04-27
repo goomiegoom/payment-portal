@@ -444,7 +444,9 @@ tbody tr.admin-row { background: rgba(252,232,232,0.2); }
     <div class="modal-body">
       <div class="form-group"><label class="form-label">ชื่อโปรเจกต์ *</label><input class="form-input" id="prjName" placeholder="เช่น Data with AI Batch 3"></div>
       <div class="form-group"><label class="form-label">วันที่</label><input type="date" class="form-input" id="prjDate"></div>
-      <div class="form-grid"><div><label class="form-label">Billing Client</label><input class="form-input" id="prjBilling" placeholder="เช่น True Digital Academy"></div><div><label class="form-label">End Client</label><input class="form-input" id="prjEnd" placeholder="เช่น True Corporation"></div></div>
+      <div class="form-grid"><div><label class="form-label">Billing Client</label><input class="form-input" id="prjBilling" list="billingClientList" placeholder="เช่น True Digital Academy" autocomplete="off"></div><div><label class="form-label">End Client</label><input class="form-input" id="prjEnd" list="endClientList" placeholder="เช่น True Corporation" autocomplete="off"></div></div>
+      <datalist id="billingClientList"></datalist>
+      <datalist id="endClientList"></datalist>
     </div>
     <div class="modal-footer"><button class="btn" onclick="closeProjectModal()">ยกเลิก</button><button class="btn btn-accent" id="prjSubmitBtn" onclick="submitProject()">➕ เพิ่มโปรเจกต์</button></div>
   </div>
@@ -912,7 +914,17 @@ function downloadCSV(csv, fname) { var a=document.createElement('a'); a.href=URL
 // ═══════════════════════════════════════
 // PROJECT MODAL & PAGE
 // ═══════════════════════════════════════
-function openProjectModal() { document.getElementById('prjName').value=''; document.getElementById('prjDate').value=''; document.getElementById('prjBilling').value=''; document.getElementById('prjEnd').value=''; document.getElementById('projectModal').classList.add('open'); }
+function openProjectModal() {
+  document.getElementById('prjName').value='';
+  document.getElementById('prjDate').value='';
+  document.getElementById('prjBilling').value='';
+  document.getElementById('prjEnd').value='';
+  var billingClients = state.projects.map(function(p){ return p.billingClient; }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v)===i; });
+  var endClients = state.projects.map(function(p){ return p.endClient; }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v)===i; });
+  document.getElementById('billingClientList').innerHTML = billingClients.map(function(c){ return '<option value="'+esc(c)+'">'; }).join('');
+  document.getElementById('endClientList').innerHTML = endClients.map(function(c){ return '<option value="'+esc(c)+'">'; }).join('');
+  document.getElementById('projectModal').classList.add('open');
+}
 function closeProjectModal() { document.getElementById('projectModal').classList.remove('open'); }
 function submitProject() {
   var name = document.getElementById('prjName').value.trim();
