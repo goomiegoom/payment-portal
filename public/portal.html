@@ -208,8 +208,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); -webki
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ taxId: taxId })
     })
-    .then(function(r) { return r.json(); })
-    .then(function(d) { if (self._success) self._success(d); })
+    .then(function(r) {
+      return r.json().then(function(d) {
+        if (!r.ok) { if (self._failure) self._failure({ message: (d && d.error) || ('HTTP ' + r.status) }); return; }
+        if (self._success) self._success(d);
+      });
+    })
     .catch(function(e) { if (self._failure) self._failure({ message: e.message }); });
   };
   window.google = { script: { get run() { return new Runner(); } } };

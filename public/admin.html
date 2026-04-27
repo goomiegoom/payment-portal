@@ -466,16 +466,24 @@ tbody tr.admin-row { background: rgba(252,232,232,0.2); }
     var self = this, h = { 'Content-Type': 'application/json' };
     if (_tok) h['Authorization'] = 'Bearer ' + _tok;
     fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body || {}) })
-      .then(function(r) { return r.json(); })
-      .then(function(d) { if (self._success) self._success(d); })
+      .then(function(r) {
+        return r.json().then(function(d) {
+          if (!r.ok) { if (self._failure) self._failure({ message: (d && d.error) || ('HTTP ' + r.status) }); return; }
+          if (self._success) self._success(d);
+        });
+      })
       .catch(function(e) { if (self._failure) self._failure({ message: e.message || String(e) }); });
   };
   Runner.prototype._get = function(url) {
     var self = this, h = {};
     if (_tok) h['Authorization'] = 'Bearer ' + _tok;
     fetch(url, { method: 'GET', headers: h })
-      .then(function(r) { return r.json(); })
-      .then(function(d) { if (self._success) self._success(d); })
+      .then(function(r) {
+        return r.json().then(function(d) {
+          if (!r.ok) { if (self._failure) self._failure({ message: (d && d.error) || ('HTTP ' + r.status) }); return; }
+          if (self._success) self._success(d);
+        });
+      })
       .catch(function(e) { if (self._failure) self._failure({ message: e.message || String(e) }); });
   };
   Runner.prototype.verifyPasskey = function(pk) {
