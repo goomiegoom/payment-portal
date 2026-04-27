@@ -8,6 +8,7 @@ const DOCS   = 'Documents';
 
 export const config = {
   api: { responseLimit: false },
+  maxDuration: 60,
 };
 
 async function handler(req, res) {

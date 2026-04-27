@@ -22,14 +22,15 @@ async function handler(req, res) {
   if (!base64Data || !fileName) return res.status(400).json({ success: false, error: 'MISSING_FIELDS' });
 
   try {
-    const { fileId, fileName: savedName, size } = await uploadFile(
-      { taxId: docData.taxId, project: docData.project, visibility: docData.visibility },
-      base64Data,
-      mimeType,
-      fileName,
-    );
-
-    const payeeName = await getPayeeName(docData.taxId);
+    const [{ fileId, fileName: savedName, size }, payeeName] = await Promise.all([
+      uploadFile(
+        { taxId: docData.taxId, project: docData.project, visibility: docData.visibility },
+        base64Data,
+        mimeType,
+        fileName,
+      ),
+      getPayeeName(docData.taxId),
+    ]);
     const sizeKB = size ? `${Math.round(Number(size) / 1024)} KB` : '';
 
     await appendRow(DOCS, [
@@ -53,5 +54,5 @@ async function handler(req, res) {
   }
 }
 
-export const config = { api: { bodyParser: { sizeLimit: '25mb' } } };
+export const config = { api: { bodyParser: { sizeLimit: '25mb' } }, maxDuration: 60 };
 export default handler;
