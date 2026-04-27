@@ -31,4 +31,4 @@ async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 }
-module.exports = handler;
+export default handler;

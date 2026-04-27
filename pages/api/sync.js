@@ -6,7 +6,7 @@ const { listAllFiles } = require('../../lib/drive');
 const PAYEES = 'Payees';
 const DOCS   = 'Documents';
 
-const config = {
+export const config = {
   api: { responseLimit: false },
 };
 
@@ -98,4 +98,4 @@ function detectProject(path) {
   const parts = path.split('/').filter(p => p && p !== 'admin_only');
   return parts.length >= 2 ? parts[1] : '';
 }
-module.exports = handler;
+export default handler;

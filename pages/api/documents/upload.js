@@ -3,9 +3,6 @@ const { requireAdmin } = require('../../../lib/auth');
 const { readSheet, appendRow, safeStr } = require('../../../lib/sheets');
 const { uploadFile } = require('../../../lib/drive');
 
-const config = {
-  api: { bodyParser: { sizeLimit: '25mb' } },
-};
 
 const PAYEES = 'Payees';
 const DOCS   = 'Documents';
@@ -56,5 +53,5 @@ async function handler(req, res) {
   }
 }
 
-handler.config = config;
-module.exports = handler;
+export const config = { api: { bodyParser: { sizeLimit: '25mb' } } };
+export default handler;
